@@ -49,7 +49,11 @@ func (c *Client) create(content []byte, path string) error {
 	if err := paths.EnsureDirectory(logrus.StandardLogger(), filepath.Dir(path)); err != nil {
 		return err
 	}
-	return ioutil.WriteFile(path, content, 0755)
+	err := ioutil.WriteFile(path, content, 0755)
+	if err == nil {
+		c.Log.Printf("Successfully saved to: %s", path)
+	}
+	return err
 }
 
 func (c *Client) append(content []byte, path string) error {
@@ -60,5 +64,8 @@ func (c *Client) append(content []byte, path string) error {
 	}
 	defer f.Close()
 	_, err = f.Write(content)
+	if err == nil {
+		c.Log.Printf("Successfully saved to: %s", path)
+	}
 	return err
 }
